@@ -5,6 +5,7 @@
       - [Instalação dos componentes em máquinas diferentes](#instalação-dos-componentes-em-máquinas-diferentes)
       - [boca-docker no Windows](#boca-docker-no-windows)
     - [Instalação na nuvem](#instalação-na-nuvem)
+    - [Acessar BOCA](#acessar-boca)
   - [Instalação do Maratona Linux](#instalação-do-maratona-linux)
     - [Instalação em máquina física](#instalação-em-máquina-física)
     - [Instalação em máquina virtual](#instalação-em-máquina-virtual)
@@ -12,12 +13,15 @@
   - [Configurações e orientações adicionais](#configurações-e-orientações-adicionais)
     - [Permitir alteração do papel de parede no Maratona Linux](#permitir-alteração-do-papel-de-parede-no-maratona-linux)
     - [Configuração otimizada do Maratona Linux em máquina virtual](#configuração-otimizada-do-maratona-linux-em-máquina-virtual)
+    - [Permitir momentaneamente acesso à internet no Maratona Linux](#permitir-momentaneamente-acesso-à-internet-no-maratona-linux)
+    - [Habilitar pastas compartilhadas no VirtualBox](#habilitar-pastas-compartilhadas-no-virtualbox)
     - [Alterar layout do teclado no Ubuntu Server](#alterar-layout-do-teclado-no-ubuntu-server)
     - [Alterar o fuso horário no Ubuntu Server](#alterar-o-fuso-horário-no-ubuntu-server)
     - [Adicionar domínio ao servidor do BOCA](#adicionar-domínio-ao-servidor-do-boca)
       - [Ativar certificado SSL para o domínio](#ativar-certificado-ssl-para-o-domínio)
     - [Instalar um desktop environment (GUI) no Ubuntu Server](#instalar-um-desktop-environment-gui-no-ubuntu-server)
     - [Ocultar o menu GRUB](#ocultar-o-menu-grub)
+    - [Conectar com o banco de dados do BOCA usando pgAdmin](#conectar-com-o-banco-de-dados-do-boca-usando-pgadmin)
     - [Instalar Adminer no servidor do BOCA](#instalar-adminer-no-servidor-do-boca)
     - [Remover o ícone do Mozilla Firefox do Maratona Linux](#remover-o-ícone-do-mozilla-firefox-do-maratona-linux)
     - [Habilitar compartilhamento de rede no Windows 11](#habilitar-compartilhamento-de-rede-no-windows-11)
@@ -74,6 +78,7 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
 
 1. Faça o download da última versão do [Ubuntu Server 22.04](https://ubuntu.com/download/server).
 2. Faça o download e instale o [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
+  - Caso você receba algum erro durante a instalação do VirtualBox solicitando que você instale o VirtualBox Extension Pack, lembre-se de fazer o download do extension pack da mesma versão do VirtualBox. O download do extension pack se encontra na mesma página do link acima.
 3. Abra o VirtualBox e crie uma nova máquina virtual com as seguintes especificações:
   - Nome: `boca`;
   - Tipo: `Linux`;
@@ -102,8 +107,9 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
   - insira uma senha confidencial e segura para o banco de dados;
   - responda com `Y` quando perguntado se você quer sobrescrever o arquivo `pg_hba.conf`;
   - responda com `Yes` quando perguntado se você quer criar um novo banco de dados para o BOCA.
+  - Caso a instalação em uma **droplet** seja interrompida devido há algum erro, veja a seção de [Instalação na nuvem](#instalação-na-nuvem) (talvez seja necessário escolher uma droplet mais potente).
 10. Ao final da instalação, o seguinte erro talvez seja exibido: `W: Download is performed unsandboxed as root as file '/var/cache/apt/archives/partial/libdebuginfod-common_0.186-1build1_all.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)`. Esse erro é inofensivo e pode ser ignorado.
-11. Após a instalação concluir, execute `hostname -I` para descobrir o endereço IP do servidor BOCA e use esse endereço (por exemplo: `http://10.2.73.216/boca`) para acessar o BOCA de qualquer máquina conectada na mesma rede local do servidor.
+11. Siga para a seção [Acessar BOCA](#acessar-boca).
 
 #### Instalação dos componentes em máquinas diferentes
 
@@ -117,6 +123,7 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
 13. Inicie a máquina `boca-web` e execute `sudo apt install boca-web -y` (durante a instalação, insira o endereço que foi descoberto na etapa anterior quando um prompt aparecer solicitado o endereço do banco de dados). Após a instalação ser finalizada, execute `hostname -I` para descobrir qual endereço IP usar para acessar o BOCA.
 14. Inicie a máquina `boca-autojudge`, execute `sudo apt install boca-autojudge -y && sudo boca-createjail` (durante a instalação, insira o endereço que foi descoberto na etapa ante anterior quando um prompt aparecer solicitado o endereço do banco de dados).
 15. Ao final da instalação, o seguinte erro talvez seja exibido: `W: Download is performed unsandboxed as root as file '/var/cache/apt/archives/partial/libdebuginfod-common_0.186-1build1_all.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)`. Esse erro é inofensivo e pode ser ignorado.
+16. Siga para a seção [Acessar BOCA](#acessar-boca).
 
 #### boca-docker no Windows
 
@@ -128,15 +135,28 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
 3. Execute `net localgroup docker-users $env:UserName /ADD` para adicionar o usuário atual ao grupo do Docker e reinicie o computador para evitar o error `O usuário atual deve estar no grupo 'docker-users' para usar o Docker Desktop. Adicione-se ao grupo 'docker-users' e, em seguida, faça logon do Windows.`.
 4. Faça o download dos arquivos `docker-compose.yml` e `docker-compose.prod.yml` do repositório do [boca-docker](https://github.com/joaofazolo/boca-docker).
 5. Execute `docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d` para criar e executar os contêiners e aguarde a finalização da execução.
-6. Descubra o IP interno da máquina executando o comando `ipconfig` para acessar o BOCA através desse endereço (por exemplo: `http://10.2.73.216:8000/boca`) a partir de qualquer máquina conectada na mesma rede local do servidor.
+6. Siga para a seção [Acessar BOCA](#acessar-boca).
 
 ### Instalação na nuvem
 
 1. Crie uma conta no [DigitalOcean](https://www.digitalocean.com/) e faça login.
 2. Crie uma droplet que utiliza o Ubuntu 22.04 como sistema operacional, selecione a opção de login através de senha ao invés de chava de SSH para que seja mais fácil acessar o servidor a partir de qualquer máquina e, por último, selecione as especificações da máquina de acordo com a quantidade de equipes que competirão na maratona. Instruções detalhadas estão disponíveis no site do [DigitalOcean](https://docs.digitalocean.com/products/droplets/how-to/create/). Após o término do processo de criação, copie o endereço IP da máquina recém criada.
+  - Durante uma instalação realizada em Fevereiro de 2024, ao executar o comando de instalação do BOCA (`sudo apt install boca -y`), a **droplet de $4 (1 vCPU / 0.5GB / 10GB Disk)** apresentou um erro que impossibilitou a finalização da instalação. Uma outra droplet mais performante ($6 / 1 vCPU / 1GB / 25GB disk / regular SSD) não apresentou esse problema.
+    - Erro: `Errors were encountered while processing: python3-sympy python3-fonttools python3-ufolib2 python3-matplotlib boca-web boca`
 3. Use o protocolo SSH para acessar remotamente o servidor criado na etapa anterior. No Linux utilize o comando `ssh` (por exemplo: `ssh root@143.110.144.249`) e no Windows o WSL (para ser capaz de executar esse mesmo comando) ou o emulador de terminal PuTTY.
-4. Atualize o sistema e instale o repositório que contém os pacotes do BOCA tal como descrito nas últimas duas etapas da seção [Instalação local em máquina virtual](#instalação-local-em-máquina-virtual).
+4. Atualize o sistema e instale o repositório que contém os pacotes do BOCA tal como descrito nas últimas duas etapas da seção [Instalação local](#instalação-local).
 5. Para instalar todos os componentes do BOCA em um mesmo servidor, siga as instruções da seção [Instalação de todos os componentes em uma mesma máquina](#instalação-de-todos-os-componentes-em-uma-mesma-máquina). Por outro lado, caso deseje instalar os três componentes em máquinas diferentes, repita o processo de criação de droplet, acesso remoto e configuração inicial das etapas 2–4 mais duas vezes e siga as instruções da seção [Instalação dos componentes em máquinas diferentes](#instalação-dos-componentes-em-máquinas-diferentes).
+
+### Acessar BOCA
+
+- Após a conclusão da instalação, execute `hostname -I` (no Linux) ou `ipconfig` (no Windows) para descobrir o endereço **IP do servidor** BOCA e use esse IP para acessar o BOCA, por exemplo: `http://10.2.73.216/boca`.
+  - Caso a instalação tenha sido realizada em servidor local, apenas máquinas conectadas à mesma rede terão acesso ao BOCA. Caso instalação em nuvem, qualquer máquina conectada à internet poderá acessar o BOCA.
+- As **credenciais padrões** do Boca são:
+  - name: `system`,
+  - password: `boca`.
+- Após criar e ativar uma competição, as **credenciais padrões** para gerenciar a competição ativa são:
+  - name: `admin`,
+  - password: `boca`.
 
 ## Instalação do Maratona Linux
 
@@ -187,7 +207,7 @@ O Maratona Linux pode ser instalado em máquinas físicas ou virtuais. Os fatore
 
 > [fonte](https://github.com/maratona-linux/maratona-firewall/tree/master#enabling-my-own-boca)
 
-1. Execute o comando `hostname -I` na máquina em que o pacote `boca-web` está instalado. A saída desse comando é o endereço IP que será utilizado por qualquer máquina conectada à rede local (ou qualquer máquina conectada à internet, caso o BOCA tenha sido instalado na nuvem) para acessar o BOCA utilizando a seguinte URL: http://IP/boca.
+1. Execute o comando `hostname -I` na máquina em que o pacote `boca-web` está instalado. A saída desse comando é o endereço IP que será utilizado por qualquer máquina conectada à rede local (ou qualquer máquina conectada à internet, caso o BOCA tenha sido instalado na nuvem) para acessar o BOCA utilizando uma URL no seguinte formato: http://IP/boca.
 2. Na máquina em que o Maratona Linux foi instalado, faça o login utilizando a conta de administrador (isso é, a conta que foi criada durante a instalação do Ubuntu) e apague o conteúdo do arquivo `/etc/maratona-firewall/hosts/boca.localdomain` e adicione o endereço do servidor BOCA. Ressalta-se que esse arquivo pode conter apenas um endereço IP.
 3. Opcionalmente, crie múltiplos arquivos nesse mesmo diretório para permitir o acesso a múltiplas máquinas. Cada arquivo deve conter apenas um endereço IP e ter o nome correspondente ao FQDN (Fully Qualified Domain Name) do servidor.
 4. Execute `sudo dpkg-reconfigure maratona-firewall` para atualizar as configurações.
@@ -216,6 +236,23 @@ Com as instruções a seguir, a máquina virtual parecerá ser o único sistema 
   - deixe as seguintes checkboxes em branco: `Habilitar Barra de Menu`, `Exibir nos modos Tela Cheia/Seamless (F)` e `Habilitar Barra de Status`;
   - configure o `Estado Visual` para `Tela Cheia`.
 4. Para desabilitar as notificações que geralmente aparecem em uma painel do lado direito da tela após a inicialização da máquina virtual, execute no PowerShell `cd 'C:\Program Files\Oracle\VirtualBox\'; .\VBoxManage.exe setextradata global GUI/SuppressMessages "all"`. Caso a máquina virtual esteja instalada no VirtualBox do administrador, o PowerShell também deve ser executado com privilégios de administrador.
+
+### Permitir momentaneamente acesso à internet no Maratona Linux
+
+Isso é útil para, por exemplo, fazer download de arquivos ou atualizar programas.
+
+1. Faça login com as credenciais do administrador (isso é, a conta que foi criada durante a instalação do Ubuntu).
+2. Execute `sudo systemctl stop maratona-firewall.service`.
+3. Após finalizar o uso da internet, reinicie o sistema para reativar o firewall.
+
+### Habilitar pastas compartilhadas no VirtualBox
+
+Isso é útil para transferir arquivos entre a máquina hospedeira e o Maratona Linux.
+
+1. No VirtualBox, selecione a máquina com o Maratona Linux instalado e clique em `Configurações`.
+2. Abrar a aba `Pastas compartilhadas` e adicione uma nova pasta.
+3. Inicie a máquina com o Maratona Linux instalado e faça login com o administrador.
+4. Execute `sudo mount -rt vboxsf mount_name location_path`. `mount_name` é o nome que você escolheu na interface do VirtualBox e `location_path` e o diretório no qual a pasta será montada (esse diretório deve existir). Caso você queira desmontar o diretório compartilhado (isso acontece automaticamente quando o sistema é desligado), execute `sudo umount ./gusalbukrk`.
 
 ### Alterar layout do teclado no Ubuntu Server
 
@@ -264,6 +301,19 @@ Quando se utiliza a técnica de inicialização dupla (dual boot), ocultar o men
   - `GRUB_TIMEOUT=5`.
 2. Execute `sudo vi /etc/grub.d/30_os-prober` e comente a linha `set timeout_style=menu`. Essa etapa é necessária pois a linha mencionada sobrescreve o valor da variável `GRUB_TIMEOUT_STYLE`.
 3. Execute `sudo update-grub` para atualizar as configurações.
+
+### Conectar com o banco de dados do BOCA usando pgAdmin
+
+1. Conecte ao servidor BOCA usando SSH e realize as seguintes mudanças:
+    1. execute `sudo vi /etc/postgresql/14/main/postgresql.conf` e adicione ou edite a seguinte linha: `listen_addresses = '*'`;
+    2. execute `sudo vi /etc/postgresql/14/main/pg_hba.conf`, localize a linha `local all postgres peer` e insira antes da dela a seguinte linha `host  all  all 0.0.0.0/0 scram-sha-256`.
+2. Na aba `Dashboard` do pgAdmin, clique em `Adicionar novo servidor` e adicione um novo servidor com as seguintes configurações:
+    - `Nome`: `boca` ou qualquer outro nome que preferir;
+    - `Nome do servidor/endereço`: o IP do servidor BOCA;
+    - `Porta`: `5432` (essa é a porta padrão do Postgres, você pode confirmar se essa realmente é a porta com o comando `sudo netstat -lpnt | grep ":5432"`);
+    - `Maintenance database`: `postgres`;
+    - `Nome do usuário`: `bocauser`;
+    - `Senha`: a senha que você escolheu durante a instalação do `boca-db`.
 
 ### Instalar Adminer no servidor do BOCA
 
