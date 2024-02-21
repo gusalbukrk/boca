@@ -21,7 +21,7 @@
       - [Ativar certificado SSL para o domínio](#ativar-certificado-ssl-para-o-domínio)
     - [Instalar um desktop environment (GUI) no Ubuntu Server](#instalar-um-desktop-environment-gui-no-ubuntu-server)
     - [Ocultar o menu GRUB](#ocultar-o-menu-grub)
-    - [Conectar com o banco de dados do BOCA usando pgAdmin](#conectar-com-o-banco-de-dados-do-boca-usando-pgadmin)
+    - [Conectar com o banco de dados do BOCA usando o pgAdmin](#conectar-com-o-banco-de-dados-do-boca-usando-o-pgadmin)
     - [Instalar Adminer no servidor do BOCA](#instalar-adminer-no-servidor-do-boca)
     - [Remover o ícone do Mozilla Firefox do Maratona Linux](#remover-o-ícone-do-mozilla-firefox-do-maratona-linux)
     - [Habilitar compartilhamento de rede no Windows 11](#habilitar-compartilhamento-de-rede-no-windows-11)
@@ -78,24 +78,24 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
 
 1. Faça o download da última versão do [Ubuntu Server 22.04](https://ubuntu.com/download/server).
 2. Faça o download e instale o [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-  - Caso você receba algum erro durante a instalação do VirtualBox solicitando que você instale o VirtualBox Extension Pack, lembre-se de fazer o download do extension pack da mesma versão do VirtualBox. O download do extension pack se encontra na mesma página do link acima.
+    - Caso você receba algum erro durante a instalação do VirtualBox solicitando que você instale o VirtualBox Extension Pack, lembre-se de fazer o download do extension pack da mesma versão do VirtualBox. O download do extension pack se encontra na mesma página do link acima.
 3. Abra o VirtualBox e crie uma nova máquina virtual com as seguintes especificações:
-  - Nome: `boca`;
-  - Tipo: `Linux`;
-  - Versão: `Ubuntu 22.04 LTS (Jammy Jellyfish) (64-bit)`;
-  - Memória Base: `4096MB`;
-  - Processadores: `4`;
-  - Tamanho do disco: `15GB`.
+    - Nome: `boca`;
+    - Tipo: `Linux`;
+    - Versão: `Ubuntu 22.04 LTS (Jammy Jellyfish) (64-bit)`;
+    - Memória Base: `4096MB`;
+    - Processadores: `4`;
+    - Tamanho do disco: `15GB`.
 4. Nas configurações da máquina recém-criada, performe as seguintes modificações:
-   1. Na aba de Armazenamento, adicione como `Dispositivo IDE Secundário 0` a image ISO baixada na etapa 1.
-   2. Na aba de Rede, mude o tipo de conexão da placa de rede de `Nat` para `Placa em modo Bridge` para que a máquina virtual faça parte da mesma rede da máquina hospedeira com um IP próprio.
+    1. Na aba de Armazenamento, adicione como `Dispositivo IDE Secundário 0` a image ISO baixada na etapa 1.
+    2. Na aba de Rede, mude o tipo de conexão da placa de rede de `Nat` para `Placa em modo Bridge` para que a máquina virtual faça parte da mesma rede da máquina hospedeira com um IP próprio.
 5. Inicie a máquina virtual e instale o Ubuntu selecionando as seguintes opções no menu de instalação (use os valores padrões para as configurações não listadas abaixo):
-  - Language: `Português`;
-  - Keyboard layout: `Portuguese (Brazil)`;
-  - Base for the installation: `Ubuntu Server`; habilite `Search for third-party drivers`;
-  - habilite `Use an entire disk`; desabilite `Set up this disk as an LVM group`;
-  - deixe `Install OpenSSH Server` desabilitado ;
-  - na tela de seleção de snaps a instalar, deixe todos desmarcados pois não faremos uso de nenhum deles.
+    - Language: `Português`;
+    - Keyboard layout: `Portuguese (Brazil)`;
+    - Base for the installation: `Ubuntu Server`; habilite `Search for third-party drivers`;
+    - habilite `Use an entire disk`; desabilite `Set up this disk as an LVM group`;
+    - deixe `Install OpenSSH Server` desabilitado ;
+    - na tela de seleção de snaps a instalar, deixe todos desmarcados pois não faremos uso de nenhum deles.
 6. Após a instalação finalizar, selecione `Reboot now` para reiniciar o sistema.
 7. Execute `sudo apt update && sudo apt full-upgrade -y` para atualizar o sistema.
 8. Execute `sudo add-apt-repository ppa:icpc-latam/maratona-linux` para adicionar o repositório em que são disponibilizados os pacotes do BOCA e do Maratona Linux.
@@ -103,11 +103,11 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
 #### Instalação de todos os componentes em uma mesma máquina
 
 9. Execute `sudo apt install boca -y && sudo boca-createjail` para instalar todos os 3 componentes (servidor web, banco de dados e autojudge) do BOCA; alguns prompts aparecerão durante a instalação, responda-os da seguinte maneira:
-  - deixe o host do banco de dados com o valor padrão (`localhost`);
-  - insira uma senha confidencial e segura para o banco de dados;
-  - responda com `Y` quando perguntado se você quer sobrescrever o arquivo `pg_hba.conf`;
-  - responda com `Yes` quando perguntado se você quer criar um novo banco de dados para o BOCA.
-  - Caso a instalação em uma **droplet** seja interrompida devido há algum erro, veja a seção de [Instalação na nuvem](#instalação-na-nuvem) (talvez seja necessário escolher uma droplet mais potente).
+    - deixe o host do banco de dados com o valor padrão (`localhost`);
+    - insira uma senha confidencial e segura para o banco de dados;
+    - responda com `Y` quando perguntado se você quer sobrescrever o arquivo `pg_hba.conf`;
+    - responda com `Yes` quando perguntado se você quer criar um novo banco de dados para o BOCA.
+    - Caso a instalação em uma **droplet** seja interrompida devido há algum erro, veja a seção de [Instalação na nuvem](#instalação-na-nuvem) (talvez seja necessário escolher uma droplet mais potente).
 10. Ao final da instalação, o seguinte erro talvez seja exibido: `W: Download is performed unsandboxed as root as file '/var/cache/apt/archives/partial/libdebuginfod-common_0.186-1build1_all.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)`. Esse erro é inofensivo e pode ser ignorado.
 11. Siga para a seção [Acessar BOCA](#acessar-boca).
 
@@ -115,9 +115,9 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
 
 9. Execute `systemctl poweroff` para desligar a máquina virtual.
 10. No VirtualBox, clone a máquina `boca` duas vezes utilizando as seguintes opções:
-  - Política de Endereço MAC: `Gerar novos endereços MAC para todas as placas de rede`;
-  - Opções Adicionais: desabilite `Manter Nomes dos Discos` e `Manter UUIDs do Hardware`;
-  - Tipo de Clone: `Clone completo`.
+    - Política de Endereço MAC: `Gerar novos endereços MAC para todas as placas de rede`;
+    - Opções Adicionais: desabilite `Manter Nomes dos Discos` e `Manter UUIDs do Hardware`;
+    - Tipo de Clone: `Clone completo`.
 11. Renomei as três máquinas virtuais existentes para `boca-web`, `boca-db` e `boca-autojudge`.
 12. Inicie a máquina `boca-db`, execute `sudo apt install boca-db -y` (use a seção anterior como referência para responder os prompts que aparecerão durante o processo de instalação) e execute `hostname -I` para descobrir o endereço IP interno dessa máquina.
 13. Inicie a máquina `boca-web` e execute `sudo apt install boca-web -y` (durante a instalação, insira o endereço que foi descoberto na etapa anterior quando um prompt aparecer solicitado o endereço do banco de dados). Após a instalação ser finalizada, execute `hostname -I` para descobrir qual endereço IP usar para acessar o BOCA.
@@ -128,9 +128,9 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
 #### boca-docker no Windows
 
 1. Em uma máquina Windows 10 ou 11, instale o WSL e a distribuição Ubuntu (informações mais detalhadas podem ser encontradas no [site oficial da Microsoft](https://learn.microsoft.com/pt-br/windows/wsl/install)).
-  1. Abra as `Configurações`, clique em `Aplicativos` na barra lateral da esquerda, clique em `Recursos opcionais`, clique em `Mais recursos do Windows`, habilite `Plataforma de Máquina Virtual` e `Subsistema do Windows para Linux` e reinicie o computador.
-  2. Execute `wsl --update`.
-  3. Execute `wsl --install -d Ubuntu` para instalar a distribuição Ubuntu.
+    1. Abra as `Configurações`, clique em `Aplicativos` na barra lateral da esquerda, clique em `Recursos opcionais`, clique em `Mais recursos do Windows`, habilite `Plataforma de Máquina Virtual` e `Subsistema do Windows para Linux` e reinicie o computador.
+    2. Execute `wsl --update`.
+    3. Execute `wsl --install -d Ubuntu` para instalar a distribuição Ubuntu.
 2. Download e instale o [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 3. Execute `net localgroup docker-users $env:UserName /ADD` para adicionar o usuário atual ao grupo do Docker e reinicie o computador para evitar o error `O usuário atual deve estar no grupo 'docker-users' para usar o Docker Desktop. Adicione-se ao grupo 'docker-users' e, em seguida, faça logon do Windows.`.
 4. Faça o download dos arquivos `docker-compose.yml` e `docker-compose.prod.yml` do repositório do [boca-docker](https://github.com/joaofazolo/boca-docker).
@@ -141,8 +141,8 @@ Utilizaremos máquinas virtuais para demostrar como é feita a instalação loca
 
 1. Crie uma conta no [DigitalOcean](https://www.digitalocean.com/) e faça login.
 2. Crie uma droplet que utiliza o Ubuntu 22.04 como sistema operacional, selecione a opção de login através de senha ao invés de chava de SSH para que seja mais fácil acessar o servidor a partir de qualquer máquina e, por último, selecione as especificações da máquina de acordo com a quantidade de equipes que competirão na maratona. Instruções detalhadas estão disponíveis no site do [DigitalOcean](https://docs.digitalocean.com/products/droplets/how-to/create/). Após o término do processo de criação, copie o endereço IP da máquina recém criada.
-  - Durante uma instalação realizada em Fevereiro de 2024, ao executar o comando de instalação do BOCA (`sudo apt install boca -y`), a **droplet de $4 (1 vCPU / 0.5GB / 10GB Disk)** apresentou um erro que impossibilitou a finalização da instalação. Uma outra droplet mais performante ($6 / 1 vCPU / 1GB / 25GB disk / regular SSD) não apresentou esse problema.
-    - Erro: `Errors were encountered while processing: python3-sympy python3-fonttools python3-ufolib2 python3-matplotlib boca-web boca`
+    - Durante uma instalação realizada em Fevereiro de 2024, ao executar o comando de instalação do BOCA (`sudo apt install boca -y`), a **droplet de $4 (1 vCPU / 0.5GB / 10GB Disk)** apresentou um erro que impossibilitou a finalização da instalação. Uma outra droplet mais performante ($6 / 1 vCPU / 1GB / 25GB disk / regular SSD) não apresentou esse problema.
+      - Erro: `Errors were encountered while processing: python3-sympy python3-fonttools python3-ufolib2 python3-matplotlib boca-web boca`
 3. Use o protocolo SSH para acessar remotamente o servidor criado na etapa anterior. No Linux utilize o comando `ssh` (por exemplo: `ssh root@143.110.144.249`) e no Windows o WSL (para ser capaz de executar esse mesmo comando) ou o emulador de terminal PuTTY.
 4. Atualize o sistema e instale o repositório que contém os pacotes do BOCA tal como descrito nas últimas duas etapas da seção [Instalação local](#instalação-local).
 5. Para instalar todos os componentes do BOCA em um mesmo servidor, siga as instruções da seção [Instalação de todos os componentes em uma mesma máquina](#instalação-de-todos-os-componentes-em-uma-mesma-máquina). Por outro lado, caso deseje instalar os três componentes em máquinas diferentes, repita o processo de criação de droplet, acesso remoto e configuração inicial das etapas 2–4 mais duas vezes e siga as instruções da seção [Instalação dos componentes em máquinas diferentes](#instalação-dos-componentes-em-máquinas-diferentes).
@@ -171,15 +171,15 @@ O Maratona Linux pode ser instalado em máquinas físicas ou virtuais. Os fatore
 1. Faça o download da última versão do [Ubuntu Desktop 22.04](https://ubuntu.com/download/desktop).
 2. Crie um pendrive bootável utilizando o [Rufus](https://rufus.ie/pt/) ou ferramenta similar.
 3. Utilize o [Gerenciador de disco (`diskmgmt.msc`)](https://learn.microsoft.com/pt-br/windows-server/storage/disk-management/overview-of-disk-management) do Windows ou ferramenta similar para redimensionar uma das partições existentes e deixar 30GB de espaço não alocado.
-  - Caso você encontre o erro `não é possível reduzir um volume além do ponto onde qualquer arquivo não móvel esteja localizado` durante o redimensionamento, siga as instruções de um desses links [1](https://answers.microsoft.com/pt-br/windows/forum/all/problemas-na-redu%C3%A7%C3%A3o-de-volume/ae4179da-9e65-4ece-8289-4a71053efe1d) ou [2](https://superuser.com/questions/1017764/how-can-i-shrink-a-windows-10-partition).
+    - Caso você encontre o erro `não é possível reduzir um volume além do ponto onde qualquer arquivo não móvel esteja localizado` durante o redimensionamento, siga as instruções de um desses links [1](https://answers.microsoft.com/pt-br/windows/forum/all/problemas-na-redu%C3%A7%C3%A3o-de-volume/ae4179da-9e65-4ece-8289-4a71053efe1d) ou [2](https://superuser.com/questions/1017764/how-can-i-shrink-a-windows-10-partition).
 4. Faça boot no computador em que se deseja instalar o Maratona Linux pelo pendrive. A tecla de atalho que deve ser pressionada durante o boot para entrar no BIOS (boot menu) varia de acordo com o fabricante. Para computadores Lenovo ThinkCentre, por exemplo, a tecla é a `F1` <sup>[fonte](https://support.lenovo.com/br/pt/solutions/ht500222-recommended-ways-to-enter-bios-boot-menu-thinkpad-thinkcentre-thinkstation)</sup>.
 5. Instale o Ubuntu selecionando as seguintes opções no menu de instalação (use os valores padrões para as configurações não listadas abaixo):
-  - Idioma: `Português do Brasil`;
-  - Layout do teclado: `Portuguese (Brazil)`, `Portuguese (Brazil)`;
-  - Quais aplicações você gostaria de instalar para começar? `Instalação mínima`; Outras opções: habilite `Baixar atualizações enquanto instala Ubuntu`;
-  - Tipo de instalação: `Instalar Ubuntu ao lado do Windows Boot Manager`;
-  - Fuso horário: `São Paulo`;
-  - Escolha o `nome`, `nome do computador`, `nome de usuário` e `senha` que julgar adequados; habilite `Solicitar minha senha para entrar`.
+    - Idioma: `Português do Brasil`;
+    - Layout do teclado: `Portuguese (Brazil)`, `Portuguese (Brazil)`;
+    - Quais aplicações você gostaria de instalar para começar? `Instalação mínima`; Outras opções: habilite `Baixar atualizações enquanto instala Ubuntu`;
+    - Tipo de instalação: `Instalar Ubuntu ao lado do Windows Boot Manager`;
+    - Fuso horário: `São Paulo`;
+    - Escolha o `nome`, `nome do computador`, `nome de usuário` e `senha` que julgar adequados; habilite `Solicitar minha senha para entrar`.
 6. Após a conclusão da instalação, clique em `Reiniciar agora`.
 7. Execute `sudo apt update && sudo apt full-upgrade -y` para atualizar o sistema.
 8. Execute `sudo add-apt-repository ppa:icpc-latam/maratona-linux` para adicionar o repositório em que são disponibilizados os pacotes do BOCA e do Maratona Linux.
@@ -191,15 +191,15 @@ O Maratona Linux pode ser instalado em máquinas físicas ou virtuais. Os fatore
 1. Faça o download da última versão do [Ubuntu Desktop 22.04](https://ubuntu.com/download/desktop).
 2. Faça o download e instale o [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 3. Abra o VirtualBox e crie uma nova máquina virtual com as seguintes especificações:
-  - Nome: `maratona-linux`;
-  - Tipo: `Linux`;
-  - Versão: `Ubuntu 22.04 LTS (Jammy Jellyfish) (64-bit)`;
-  - Memória Base: `4096MB`;
-  - Processadores: `4`;
-  - Tamanho do disco: `30GB`.
+    - Nome: `maratona-linux`;
+    - Tipo: `Linux`;
+    - Versão: `Ubuntu 22.04 LTS (Jammy Jellyfish) (64-bit)`;
+    - Memória Base: `4096MB`;
+    - Processadores: `4`;
+    - Tamanho do disco: `30GB`.
 4. Nas configurações da máquina recém-criada, performe as seguintes modificações:
-   1. Na aba de Armazenamento, adicione como `Dispositivo IDE Secundário 0` a image ISO baixada na etapa 1.
-   2. Na aba de Rede, mude o tipo de conexão da placa de rede de `Nat` para `Placa em modo Bridge` para que a máquina virtual faça parte da mesma rede da máquina hospedeira com um IP próprio.
+    1. Na aba de Armazenamento, adicione como `Dispositivo IDE Secundário 0` a image ISO baixada na etapa 1.
+    2. Na aba de Rede, mude o tipo de conexão da placa de rede de `Nat` para `Placa em modo Bridge` para que a máquina virtual faça parte da mesma rede da máquina hospedeira com um IP próprio.
 5. Inicie a máquina virtual e instale o Ubuntu selecionando as mesmas opções selecionadas na etapa 5 da seção [Instalação em máquina física](#instalação-em-máquina-física) com exceção da opção tipo de instalação que deve ser configurada para `Apagar disco e reinstalar o Ubuntu` pois o disco rígido virtual armazenará apenas um sistema operacional ao contrário da instalação em máquina física na qual é utilizada a técnica de inicialização múltipla.
 6. Siga as instruções 6–10 da seção [Instalação em máquina física](#instalação-em-máquina-física) para instalar o Maratona Linux.
 
@@ -224,7 +224,7 @@ A funcionalidade de mudança de papel de parede é desativada por padrão, seja 
 1. Execute `sudo rm /etc/dconf/db/local.d/locks/90-wallpaper` para remover o lock.
 2. Execute `sudo dconf update` para atualizar as configurações.
 3. A partir de agora é possível realizar a troca de papel de parede através da interface gráfica ou do terminal.
-   - Para realizar a troca através da linha de comando, execute `gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/warty-final-ubuntu.png && gsettings set org.gnome.desktop.background picture-uri-dark file:///usr/share/backgrounds/warty-final-ubuntu.png`. Não se deve utilizar `sudo` na execução desse comando pois isso alteraria o papel de parede do root e não o do usuário atual. 
+    - Para realizar a troca através da linha de comando, execute `gsettings set org.gnome.desktop.background picture-uri file:///usr/share/backgrounds/warty-final-ubuntu.png && gsettings set org.gnome.desktop.background picture-uri-dark file:///usr/share/backgrounds/warty-final-ubuntu.png`. Não se deve utilizar `sudo` na execução desse comando pois isso alteraria o papel de parede do root e não o do usuário atual. 
 
 ### Configuração otimizada do Maratona Linux em máquina virtual
 
@@ -233,8 +233,8 @@ Com as instruções a seguir, a máquina virtual parecerá ser o único sistema 
 1. No Maratona Linux, entre na aba de `Monitores` em `Configurações` e selecione a `resolução` ideal para a máquina que está sendo configurada.
 2. No VirtualBox, abra a janela de `Preferências` e, na aba `Entrada`, mude o atalho que é usado como a `Combinação de Teclas do Hospedeiros` — ou seja, Host Key — (o padrão é `Right CTRL`) para uma combinação que deve ser mantida em sigilo dos estudantes.
 3. Ainda no VirtualBox, acesse a aba de `Interface do Usuário` das `Configurações` específicas da máquina virtual do Maratona Linux e faça as seguintes configurações:
-  - deixe as seguintes checkboxes em branco: `Habilitar Barra de Menu`, `Exibir nos modos Tela Cheia/Seamless (F)` e `Habilitar Barra de Status`;
-  - configure o `Estado Visual` para `Tela Cheia`.
+    - deixe as seguintes checkboxes em branco: `Habilitar Barra de Menu`, `Exibir nos modos Tela Cheia/Seamless (F)` e `Habilitar Barra de Status`;
+    - configure o `Estado Visual` para `Tela Cheia`.
 4. Para desabilitar as notificações que geralmente aparecem em uma painel do lado direito da tela após a inicialização da máquina virtual, execute no PowerShell `cd 'C:\Program Files\Oracle\VirtualBox\'; .\VBoxManage.exe setextradata global GUI/SuppressMessages "all"`. Caso a máquina virtual esteja instalada no VirtualBox do administrador, o PowerShell também deve ser executado com privilégios de administrador.
 
 ### Permitir momentaneamente acesso à internet no Maratona Linux
@@ -273,9 +273,9 @@ A seleção do layout do teclado já foi realizada durante a instalação do sis
 1. Escolha um registrador de domínios confiável.
 2. Compre o domínio de sua escolha.
 3. Nas configurações de DNS do domínio, adicione um novo registro com os seguintes valores:
-  - Type: `A Record`;
-  - Host: `@` para hospedar o BOCA na raiz do domínio ou qualquer valor alfanumérico para hospedá-lo em um subdomínio;
-  - Value: endereço IP da sua instância no DigitalOcean.
+    - Type: `A Record`;
+    - Host: `@` para hospedar o BOCA na raiz do domínio ou qualquer valor alfanumérico para hospedá-lo em um subdomínio;
+    - Value: endereço IP da sua instância no DigitalOcean.
 
 #### Ativar certificado SSL para o domínio
 
@@ -296,13 +296,13 @@ Caso o Ubuntu Server esteja instalado localmente (independentemente de ser em m�
 Quando se utiliza a técnica de inicialização dupla (dual boot), ocultar o menu do Grub é conveniente para manter a aparência do computador semelhante ao que era quando havia apenas o sistema Windows instalado. Após seguir as instruções fornecidas abaixo, o menu GRUB só irá aparecer caso a tecla `Esc` seja acionada logo após o computador ser ligado. Caso contrário, após cinco segundos, o Windows será iniciado automaticamente.
 
 1. Execute `sudo vi /etc/default/grub` para editar o arquivo de configuração do GRUB e certifique-se de que as seguintes opções estão configuradas corretamente:
-  - `GRUB_DEFAULT=2` — o valor dessa variável é um número inteiro que corresponde à enésima opção do menu GRUB contada a partir do zero, você deve encontrar o número que corresponde ao Windows e atribuí-lo para essa variável;
-  - `GRUB_TIMEOUT_STYLE=hidden`;
-  - `GRUB_TIMEOUT=5`.
+    - `GRUB_DEFAULT=2` — o valor dessa variável é um número inteiro que corresponde à enésima opção do menu GRUB contada a partir do zero, você deve encontrar o número que corresponde ao Windows e atribuí-lo para essa variável;
+    - `GRUB_TIMEOUT_STYLE=hidden`;
+    - `GRUB_TIMEOUT=5`.
 2. Execute `sudo vi /etc/grub.d/30_os-prober` e comente a linha `set timeout_style=menu`. Essa etapa é necessária pois a linha mencionada sobrescreve o valor da variável `GRUB_TIMEOUT_STYLE`.
 3. Execute `sudo update-grub` para atualizar as configurações.
 
-### Conectar com o banco de dados do BOCA usando pgAdmin
+### Conectar com o banco de dados do BOCA usando o pgAdmin
 
 1. Conecte ao servidor BOCA usando SSH e realize as seguintes mudanças:
     1. execute `sudo vi /etc/postgresql/14/main/postgresql.conf` e adicione ou edite a seguinte linha: `listen_addresses = '*'`;
